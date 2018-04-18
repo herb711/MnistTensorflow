@@ -1,5 +1,14 @@
 # cnn_inference.py
 # 卷积神经网络 LeNet5 前向传播函数
+'''
+INPUT: [28x28x1]           weights: 0
+CONV5-32: [28x28x32]       weights: (5*5*1+1)*32
+POOL2: [14x14x32]          weights: 0
+CONV5-64: [14x14x64]       weights: (5*5*32+1)*64
+POOL2: [7x7x64]          weights: 0
+FC: [1x1x512]              weights: (7*7*64+1)*512
+FC: [1x1x10]              weights: (1*1*512+1)*10
+'''
 import tensorflow as tf  
   
 # 1.配置参数  
@@ -43,8 +52,7 @@ def inference(input_tensor, train, regularizer):
     with tf.variable_scope('layer3-conv2'):  
         conv2_weights = tf.get_variable(  
             "weight",[CONV2_SIZE, CONV2_SIZE, CONV1_DEEP, CONV2_DEEP],  
-            initializer=tf.truncated_normal_initializer(stddev=0.1)  
-        )  
+            initializer=tf.truncated_normal_initializer(stddev=0.1))  
         conv2_biases = tf.get_variable("bias",[CONV2_DEEP],initializer=tf.constant_initializer(0.0))  
   
         conv2 = tf.nn.conv2d(pool1, conv2_weights, strides=[1,1,1,1], padding='SAME')  

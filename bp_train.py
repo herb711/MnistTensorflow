@@ -17,7 +17,7 @@ MOVING_AVERAGE_DECAY = 0.99  #滑动平均衰减率
 
 # 模型保存的路径和文件名
 MODEL_SAVE_PATH = "./model/"
-MODEL_NAME = "model_bp.ckpt" 
+MODEL_NAME = "BP_model" 
 
 def train(mnist):
     # 定义输入输出placeholder

@@ -37,27 +37,26 @@ def evaluate(mnist):
         variable_to_restore = variable_averages.variables_to_restore()  
         saver = tf.train.Saver(variable_to_restore)  
   
-        # 每隔EVAL_INTERVAL_SECS秒调用一次计算正确率的过程以检测训练过程中正确率的变化  
-        n = math.ceil(mnist.test.num_examples / mnist.test.num_examples)  
-        for i in range(n):  
-            with tf.Session() as sess:  
-                ckpt = tf.train.get_checkpoint_state(cnn_train.MODEL_SAVE_PATH)  
-                if ckpt and ckpt.model_checkpoint_path:  
-                    saver.restore(sess, ckpt.model_checkpoint_path)  
-                    global_step = ckpt.model_checkpoint_path.split('/')[-1].split('-')[-1]  
-                    xs, ys = mnist.test.next_batch(mnist.test.num_examples)  
-                    # xs, ys = mnist.test.next_batch(cnn_train.BATCH_SIZE)  
-                    reshaped_xs = np.reshape(xs, (  
-                        mnist.test.num_examples,  
-                        # cnn_train.BATCH_SIZE,  
-                        cnn_inference.IMAGE_SIZE,  
-                        cnn_inference.IMAGE_SIZE,  
-                        cnn_inference.NUM_CHANNELS))  
-                    accuracy_score = sess.run(accuracy, feed_dict={x: reshaped_xs, y_: ys})  
-                    print("After %s training step(s), test accuracy = %g" % (global_step, accuracy_score))  
-                else:  
-                    print('No checkpoint file found')  
-                    return  
+        #for i in range(n):  
+        with tf.Session() as sess:  
+            ckpt = tf.train.get_checkpoint_state(cnn_train.MODEL_SAVE_PATH)  
+            if ckpt and ckpt.model_checkpoint_path:  
+                saver.restore(sess, ckpt.model_checkpoint_path) 
+                # 用文件名组成步数 
+                global_step = ckpt.model_checkpoint_path.split('/')[-1].split('-')[-1]  
+                xs, ys = mnist.test.next_batch(mnist.test.num_examples)  
+                # xs, ys = mnist.test.next_batch(cnn_train.BATCH_SIZE)  
+                reshaped_xs = np.reshape(xs, (  
+                    mnist.test.num_examples,  
+                    # cnn_train.BATCH_SIZE,  
+                    cnn_inference.IMAGE_SIZE,  
+                    cnn_inference.IMAGE_SIZE,  
+                    cnn_inference.NUM_CHANNELS))  
+                accuracy_score = sess.run(accuracy, feed_dict={x: reshaped_xs, y_: ys})  
+                print("After %s training step(s), test accuracy = %g" % (global_step, accuracy_score))  
+            else:  
+                print('No checkpoint file found')  
+                return  
   
   
 # 主程序  
