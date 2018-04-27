@@ -16,7 +16,7 @@ TRAINING_STEPS = 5000        #训练轮数
 MOVING_AVERAGE_DECAY = 0.99  #滑动平均衰减率
 
 # 模型保存的路径和文件名
-MODEL_SAVE_PATH = "./model/"
+MODEL_SAVE_PATH = "./model/BP/"
 MODEL_NAME = "BP_model" 
 
 def train(mnist):
@@ -81,9 +81,7 @@ def train(mnist):
         train_op = tf.no_op(name='train')
 
     # 初始化tensorflow持久化类
-    # 通过变量重命名的方式加载模型，这样在向前传播过程中不需要调用求滑动平均的函数来获取平均值
-    saver = tf.train.Saver(variable_averages.variables_to_restore())
-    #saver = tf.train.Saver()
+    saver = tf.train.Saver()
 
     # 初始化会话并开始训练过程
     with tf.Session() as sess:

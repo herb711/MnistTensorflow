@@ -5,7 +5,7 @@ import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 
 import bp_inference as inf
-import bp_train
+import bp_train as tra
 
 # 模型预测结果
 def evaluate(mnist):
@@ -14,8 +14,8 @@ def evaluate(mnist):
         x = tf.placeholder(tf.float32,[None,inf.INPUT_NODE],name='x-input')
         y_ = tf.placeholder(tf.float32,[None,inf.OUTPUT_NODE],name='y-input')
         # 准备预测数据
-        validate_feed = {x: mnist.validation.images,
-                        y_: mnist.validation.labels}
+        validate_feed = {x: mnist.test.images,
+                        y_: mnist.test.labels}
         # 获取前向传播结果，因为预测不关注正则化损失的值，因此这里设置为None
         y = inf.inference(x, None)
 
@@ -27,13 +27,13 @@ def evaluate(mnist):
         #tf.argmax(y, 1) # 输出预测类别  
 
         # 设置滑动平均的系数
-        variable_averages = tf.train.ExponentialMovingAverage(bp_train.MOVING_AVERAGE_DECAY)
+        variable_averages = tf.train.ExponentialMovingAverage(tra.MOVING_AVERAGE_DECAY)
         # 通过变量重命名的方式加载模型，这样在向前传播过程中不需要调用求滑动平均的函数来获取平均值
         saver = tf.train.Saver(variable_averages.variables_to_restore())
         
         # 执行
         with tf.Session() as sess:
-            ckpt = tf.train.get_checkpoint_state(bp_train.MODEL_SAVE_PATH)
+            ckpt = tf.train.get_checkpoint_state(tra.MODEL_SAVE_PATH)
             if ckpt and ckpt.model_checkpoint_path:
                 # 加载模型
                 #saver.restore(sess, "./model/model_bp.ckpt-5001")

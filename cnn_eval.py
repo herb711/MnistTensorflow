@@ -17,15 +17,19 @@ def evaluate(mnist):
     with tf.Graph().as_default() as g:
         # 定义输入输出的格式
         x = tf.placeholder(tf.float32, [
-            mnist.validation.num_examples,           # 第一维表示样例的个数
+            mnist.test.num_examples,           # 第一维表示样例的个数
             cnn_inference.IMAGE_SIZE,             # 第二维和第三维表示图片的尺寸
             cnn_inference.IMAGE_SIZE,
             cnn_inference.NUM_CHANNELS],          # 第四维表示图片的深度，对于RBG格式的图片，深度为5
                        name='x-input')
         y_ = tf.placeholder(tf.float32, [None, cnn_inference.OUTPUT_NODE], name='y-input')
 
-        validate_feed = {x: np.reshape(mnist.validation.images, (mnist.validation.num_examples, cnn_inference.IMAGE_SIZE, cnn_inference.IMAGE_SIZE, cnn_inference.NUM_CHANNELS)),
-                         y_: mnist.validation.labels}
+        validate_feed = {x: np.reshape(mnist.test.images, 
+                    (mnist.test.num_examples, 
+                    cnn_inference.IMAGE_SIZE, 
+                    cnn_inference.IMAGE_SIZE, 
+                    cnn_inference.NUM_CHANNELS)),
+            y_: mnist.test.labels}
         # 直接通过调用封装好的函数来计算前向传播的结果。
         # 因为测试时不关注正则损失的值，所以这里用于计算正则化损失的函数被设置为None。
         y = cnn_inference.inference(x, False, None)
